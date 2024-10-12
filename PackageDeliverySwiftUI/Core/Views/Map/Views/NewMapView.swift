@@ -122,7 +122,7 @@ struct NewMapView: View {
                 //MapUserLocationButton()
                 MapCompass()
                 MapScaleView()
-                MapPitchButton()
+                MapPitchToggle()
             }
             .mapStyle(.standard(elevation: .automatic))
             .onAppear{
