@@ -75,7 +75,6 @@ struct NewMapView: View {
                 .annotationTitles(.automatic)
             }
             // draw route from driver to pick up
-            /*
             if let route = vm.routeDriverToPickup {
                 MapPolyline(route)
                     .stroke(LinearGradient.gradientWalk, style: .strokeWalk)
@@ -96,7 +95,6 @@ struct NewMapView: View {
                 }
                 .annotationTitles(.automatic)
             }
-            */
             
             // show drop off locations
             if selectedStep == .dropoff || selectedStep == .request {
