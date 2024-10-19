@@ -37,8 +37,11 @@ struct HomeView: View {
             // track delivery if the steps are done
             deliveryStepsView
             // show delivery choice steps
-            deliveryChoiceStepsView
+            // deliveryChoiceStepsView
         }
+        .onAppear {
+            mapViewModel.getUserLocation()
+        }  // This will call getUserLocation() when the view appears
         .onChange(of: stepsDone){
             stepsDone.forEach { step in
                 switch step {

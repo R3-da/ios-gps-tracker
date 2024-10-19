@@ -7,8 +7,9 @@
 import MapKit
 import Observation
 import SwiftUI
+import CoreLocation
 
-@Observable class MapViewModel/*:ObservedObject*/ {
+@Observable class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     /*@Published*/ var routePickupToDropOff: MKRoute? = MKRoute()
     /*@Published*/ var routeDriverToPickup: MKRoute? = MKRoute()
 
@@ -17,6 +18,13 @@ import SwiftUI
     /*@Published*/ var searchResultsForDrivers: [MKMapItem] = []
     /*@Published*/ var searchResults: [MKMapItem] = []
     /*@Published*/ var myLocation: [MKMapItem] = []
+    
+    /*@Published*/ var locationManager:CLLocationManager?
+    
+    // MARK: - User Location State
+    // @State private var userCoordinate: CLLocationCoordinate2D? = nil
+    /*@Published*/ var userCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 52.420958, longitude: 13.408547)
+
 
     func getDirectionsPolyLine(selectedItem : MKMapItem) {
         let request = MKDirections.Request()
@@ -125,6 +133,20 @@ import SwiftUI
                     CLLocationCoordinate2D.locU = mapItems[0].placemark.coordinate
                 }
             }
+        }
+    }
+    
+    func getUserLocation() {
+        locationManager = CLLocationManager ()
+        locationManager?.requestAlwaysAuthorization()
+        locationManager?.startUpdatingLocation ()
+        locationManager?.delegate = self
+        // locationManager?.allowsBackgroundLocationUpdates = true
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            userCoordinate = location.coordinate
         }
     }
 }

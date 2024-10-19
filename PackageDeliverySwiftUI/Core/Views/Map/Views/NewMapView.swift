@@ -20,12 +20,33 @@ struct NewMapView: View {
     
     @Binding var selectedStep : EDeliveryChoiceSteps
     
-    @State private var colorMyPin: LinearGradient = LinearGradient(colors: [.red, .orange], startPoint: .top, endPoint: .center)
+    @State private var colorMyPin: LinearGradient = LinearGradient(colors: [.orange, .green], startPoint: .top, endPoint: .center)
     
     @Binding var searchText: String
     private let searchTextPublisher = PassthroughSubject<String, Never>()
     
     @Binding var selectedVehicle : EVehicleType?
+    
+    @State private var userCoordinates: [CLLocationCoordinate2D] = []
+    @State private var isTracking: Bool = false // Tracking flag
+    
+    @State private var elapsedTime: TimeInterval = 0
+    @State private var timer: Timer? = nil
+    
+    // Function to start the timer
+    func startTimer() {
+        stopTimer() // Stop any existing timer before starting a new one
+        elapsedTime = 0 // Reset elapsed time
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            elapsedTime += 1
+        }
+    }
+    
+    // Function to stop the timer
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
     
     func updateCameraPosition(focus centerCoordinate: CLLocationCoordinate2D,
                               distance:Double,
@@ -39,6 +60,18 @@ struct NewMapView: View {
         Map(position: $cameraProsition,
             interactionModes: .all,
             selection: $selectedItem){
+            
+            Annotation("You are here", coordinate: vm.userCoordinate) {
+                VStack(spacing: 5) {
+                    Text("You are here")
+                        .font(.caption)
+                        .foregroundColor(.black)
+                        .padding(.bottom, 5) // Add some spacing between text and the view
+
+                    pickupView
+                }
+                .offset(y: -50) // Adjust this offset as needed to position correctly
+            }
             
             // show drivers locations
             if selectedStep == .request &&
@@ -86,6 +119,7 @@ struct NewMapView: View {
             }
             
             // find my location. Here is demo
+            /*
             ForEach(vm.myLocation, id: \.self){ result in
                 Annotation(selectedPickupItem == nil ? "You are here" : "Pickup Point", coordinate: result.placemark.coordinate) {
                     pickupView
@@ -95,6 +129,20 @@ struct NewMapView: View {
                 }
                 .annotationTitles(.automatic)
             }
+            */
+            
+            // find my location. Here is demo
+            /*
+            ForEach(vm.myLocation, id: \.self){ result in
+                Annotation(selectedPickupItem == nil ? "You are here" : "Pickup Point", coordinate: result.placemark.coordinate) {
+                    pickupView
+                        .onAppear{
+                            updateCameraPosition(focus: vm.userCoordinate ?? .locU, distance: 992, heading: 70, pitch: 60)
+                        }
+                }
+                .annotationTitles(.automatic)
+            }
+            */
             
             // show drop off locations
             if selectedStep == .dropoff || selectedStep == .request {
@@ -117,6 +165,12 @@ struct NewMapView: View {
                 }
                 
             }
+            
+            // Draw the user path
+            if userCoordinates.count > 1 {
+                MapPolyline(coordinates: userCoordinates)
+                    .stroke(Color.red, lineWidth: 5) // Set stroke color and width
+            }
         }
             .mapControls{
                 //MapUserLocationButton()
@@ -129,6 +183,77 @@ struct NewMapView: View {
                 vm.searchMyLocation()
                 vm.searchDriverLocations()
             }
+            .onChange(of: vm.userCoordinate.latitude) {
+                if isTracking {
+                    userCoordinates.append(vm.userCoordinate)
+                }
+            }
+            .onChange(of: vm.userCoordinate.longitude) {
+                if isTracking {
+                    userCoordinates.append(vm.userCoordinate)
+                }
+            }
+            
+            VStack {
+                HStack {
+                    Button(action: {
+                        updateCameraPosition(focus: vm.userCoordinate, distance: 2200, heading: 92, pitch: 0)
+                    }) {
+                        Image(systemName: "location.circle.fill") // Use an appropriate SF Symbol icon
+                            .resizable()
+                            .frame(width: 40, height: 40) // Adjust the size of the icon
+                            .foregroundColor(.blue) // Icon color
+                    }
+                    
+                    // Button to toggle isTracking and start/stop the timer, with icon and timer next to it
+                    Button(action: {
+                        isTracking.toggle()
+                        if isTracking {
+                            startTimer()
+                        } else {
+                            stopTimer()
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: isTracking ? "pause.circle.fill" : "play.circle.fill")
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .foregroundColor(isTracking ? .red : .green)
+                            
+                            // Show the timer next to the pause icon if isTracking is true
+                            if isTracking {
+                                Text("\(String(format: "%.0f", elapsedTime))s")
+                                    .font(.headline)
+                                    .foregroundColor(.black)
+                            }
+                        }
+                    }
+                }
+                .padding() // Padding around the HStack
+                .background(
+                    RoundedRectangle(cornerRadius: 15) // Adjust the corner radius as needed
+                        .fill(Color.white) // Set background color to white
+                        .shadow(radius: 5) // Add a shadow for a lifted effect
+                )
+                .padding(.top, 10) // Adjust to place the buttons closer to the top
+                
+                // TextField("Name", text: vm.userCoordinate)
+                
+                ZStack {
+                        Text(String(describing: vm.userCoordinate))
+                            .padding(20) // Adjust the padding inside the box
+                            .font(.caption)
+                            .background(Color.blue) // Background color
+                            .foregroundColor(.white) // Text color
+                            .cornerRadius(10) // Rounded corners
+                            .shadow(radius: 5) // Shadow for a lifted effect
+                            .frame(width: 200, height: 100) // Set width and height
+                            .padding() // Padding around the text box
+                    }
+                
+                Spacer() // Pushes everything else below
+            }
+        
             .onChange(of: selectedItem){
                 guard let selectedItem else {return}
                 if selectedStep == .pickup {
@@ -155,37 +280,38 @@ struct NewMapView: View {
                 }
             }
             .onChange(of: vm.searchResultsForDrivers){
-                updateCameraPosition(focus: .locU, distance: 1429, heading: 92, pitch: 70)
+                // updateCameraPosition(focus: .locU, distance: 1429, heading: 92, pitch: 70)
             }
             .onChange(of: vm.searchResults){
-                updateCameraPosition(focus: .locU, distance: 4129, heading: 92, pitch: 70)
+                // updateCameraPosition(focus: .locU, distance: 4129, heading: 92, pitch: 70)
             }
+            /*
             .onChange(of: selectedStep){
                 withAnimation(.spring()){
                     switch selectedStep {
                     case .pickup:
-                        updateCameraPosition(focus: .locU, distance: 992, heading: 70, pitch: 60)
+                        // updateCameraPosition(focus: .locU, distance: 992, heading: 70, pitch: 60)
                     case .package:
                         if let selectedDriverItem {
-                            updateCameraPosition(focus: selectedDriverItem.placemark.coordinate, distance: 992, heading: 70, pitch: 60)
+                            // updateCameraPosition(focus: selectedDriverItem.placemark.coordinate, distance: 992, heading: 70, pitch: 60)
                         }else {
-                            updateCameraPosition(focus: .locU, distance: 2729, heading: 92, pitch: 70)
+                            // updateCameraPosition(focus: .locU, distance: 2729, heading: 92, pitch: 70)
                         }
                     case .dropoff:
                         if let selectedDropOffItem {
-                            updateCameraPosition(focus: selectedDropOffItem.placemark.coordinate, distance: 992, heading: 70, pitch: 60)
+                            // updateCameraPosition(focus: selectedDropOffItem.placemark.coordinate, distance: 992, heading: 70, pitch: 60)
                         }else {
-                            updateCameraPosition(focus: .locU, distance: 992, heading: 70, pitch: 60)
+                            // updateCameraPosition(focus: .locU, distance: 992, heading: 70, pitch: 60)
                         }
                         
                     case .request:
-                        updateCameraPosition(focus: .locU, distance: 3729, heading: 92, pitch: 70)
+                        // updateCameraPosition(focus: .locU, distance: 3729, heading: 92, pitch: 70)
                     }
                 }
             }
             .onChange(of: selectedDropOffItem){
                 if let selectedDropOffItem {
-                    updateCameraPosition(focus: selectedDropOffItem.placemark.coordinate, distance: 3429, heading: 92, pitch: 60)
+                    // updateCameraPosition(focus: selectedDropOffItem.placemark.coordinate, distance: 3429, heading: 92, pitch: 60)
                 }
             }
             .onChange(of: selectedDriverItem){
@@ -207,6 +333,7 @@ struct NewMapView: View {
                     }
                 }
             }
+            */
             .onChange(of: searchText) { oldT, newT in
                 if selectedPickupItem != nil &&
                     selectedStep == .dropoff &&
@@ -242,8 +369,8 @@ struct NewMapView: View {
                     .foregroundStyle(colorMyPin)
                     .frame(width: 24)
                     .scaleEffect(y: -1)
-                
             }
+            .offset(y: 16)
     }
     private var dropOffView: some View {
         Text("Drop\nOff")
