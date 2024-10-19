@@ -49,7 +49,7 @@
 		AF50752B2A36F5B200E589F0 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		AF50752D2A36FFB100E589F0 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		AF50752F2A38783F00E589F0 /* DeliveryStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryStepsView.swift; sourceTree = "<group>"; };
-		AF796CE62A2FB0E6002F23A9 /* PackageDeliverySwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PackageDeliverySwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF796CE62A2FB0E6002F23A9 /* ios-gps-tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-gps-tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF796CE92A2FB0E6002F23A9 /* PackageDeliverySwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageDeliverySwiftUIApp.swift; sourceTree = "<group>"; };
 		AF796CED2A2FB0E7002F23A9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AF796CF02A2FB0E7002F23A9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -141,7 +141,7 @@
 		AF796CDD2A2FB0E6002F23A9 = {
 			isa = PBXGroup;
 			children = (
-				AF796CE82A2FB0E6002F23A9 /* PackageDeliverySwiftUI */,
+				AF796CE82A2FB0E6002F23A9 /* ios-gps-tracker */,
 				AF796CE72A2FB0E6002F23A9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -149,12 +149,12 @@
 		AF796CE72A2FB0E6002F23A9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AF796CE62A2FB0E6002F23A9 /* PackageDeliverySwiftUI.app */,
+				AF796CE62A2FB0E6002F23A9 /* ios-gps-tracker.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AF796CE82A2FB0E6002F23A9 /* PackageDeliverySwiftUI */ = {
+		AF796CE82A2FB0E6002F23A9 /* ios-gps-tracker */ = {
 			isa = PBXGroup;
 			children = (
 				AFDBF0E72A31B97E003C726A /* Info.plist */,
@@ -166,7 +166,7 @@
 				AF796CFA2A2FB1F6002F23A9 /* Model */,
 				AF796CEF2A2FB0E7002F23A9 /* Preview Content */,
 			);
-			path = PackageDeliverySwiftUI;
+			path = "ios-gps-tracker";
 			sourceTree = "<group>";
 		};
 		AF796CEF2A2FB0E7002F23A9 /* Preview Content */ = {
@@ -279,9 +279,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AF796CE52A2FB0E6002F23A9 /* PackageDeliverySwiftUI */ = {
+		AF796CE52A2FB0E6002F23A9 /* ios-gps-tracker */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AF796CF62A2FB0E7002F23A9 /* Build configuration list for PBXNativeTarget "PackageDeliverySwiftUI" */;
+			buildConfigurationList = AF796CF62A2FB0E7002F23A9 /* Build configuration list for PBXNativeTarget "ios-gps-tracker" */;
 			buildPhases = (
 				AF796CE22A2FB0E6002F23A9 /* Sources */,
 				AF796CE32A2FB0E6002F23A9 /* Frameworks */,
@@ -291,9 +291,9 @@
 			);
 			dependencies = (
 			);
-			name = PackageDeliverySwiftUI;
+			name = "ios-gps-tracker";
 			productName = PackageDeliverySwiftUI;
-			productReference = AF796CE62A2FB0E6002F23A9 /* PackageDeliverySwiftUI.app */;
+			productReference = AF796CE62A2FB0E6002F23A9 /* ios-gps-tracker.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -311,7 +311,7 @@
 					};
 				};
 			};
-			buildConfigurationList = AF796CE12A2FB0E6002F23A9 /* Build configuration list for PBXProject "PackageDeliverySwiftUI" */;
+			buildConfigurationList = AF796CE12A2FB0E6002F23A9 /* Build configuration list for PBXProject "ios-gps-tracker" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -324,7 +324,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AF796CE52A2FB0E6002F23A9 /* PackageDeliverySwiftUI */,
+				AF796CE52A2FB0E6002F23A9 /* ios-gps-tracker */,
 			);
 		};
 /* End PBXProject section */
@@ -509,11 +509,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"PackageDeliverySwiftUI/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ios-gps-tracker/Preview Content\"";
 				DEVELOPMENT_TEAM = SHP38F3EM7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PackageDeliverySwiftUI/Info.plist;
+				INFOPLIST_FILE = "ios-gps-tracker/Info.plist";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "If your app requires continuous access to the user's location, even when the app is in the background, you need to include this key along with a description.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This key provides a description of why your app needs to access the user's location when the app is in use. Add a corresponding string value that explains the purpose to the user.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -541,11 +541,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"PackageDeliverySwiftUI/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ios-gps-tracker/Preview Content\"";
 				DEVELOPMENT_TEAM = SHP38F3EM7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PackageDeliverySwiftUI/Info.plist;
+				INFOPLIST_FILE = "ios-gps-tracker/Info.plist";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "If your app requires continuous access to the user's location, even when the app is in the background, you need to include this key along with a description.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This key provides a description of why your app needs to access the user's location when the app is in use. Add a corresponding string value that explains the purpose to the user.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -569,7 +569,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AF796CE12A2FB0E6002F23A9 /* Build configuration list for PBXProject "PackageDeliverySwiftUI" */ = {
+		AF796CE12A2FB0E6002F23A9 /* Build configuration list for PBXProject "ios-gps-tracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AF796CF42A2FB0E7002F23A9 /* Debug */,
@@ -578,7 +578,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AF796CF62A2FB0E7002F23A9 /* Build configuration list for PBXNativeTarget "PackageDeliverySwiftUI" */ = {
+		AF796CF62A2FB0E7002F23A9 /* Build configuration list for PBXNativeTarget "ios-gps-tracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AF796CF72A2FB0E7002F23A9 /* Debug */,
