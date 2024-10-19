@@ -33,6 +33,10 @@ struct NewMapView: View {
     @State private var elapsedTime: TimeInterval = 0
     @State private var timer: Timer? = nil
     
+    // New properties for spinning speed
+    @State private var spinningSpeed: Double = 1.0 // degrees per second
+    @State private var isSpinning: Bool = false
+    
     // Function to start the timer
     func startTimer() {
         stopTimer() // Stop any existing timer before starting a new one
@@ -49,19 +53,55 @@ struct NewMapView: View {
     }
     
     func updateCameraPosition(focus centerCoordinate: CLLocationCoordinate2D,
-                              distance:Double,
-                              heading: Double,
-                              pitch:Double){
-        withAnimation(.spring()){
-            cameraProsition = .camera(MapCamera(centerCoordinate: centerCoordinate, distance: distance, heading: heading, pitch: pitch))
+                              distance: Double,
+                              pitch: Double) {
+        withAnimation(.spring()) {
+            cameraProsition = .camera(MapCamera(centerCoordinate: centerCoordinate, distance: distance, pitch: pitch))
+        }
+
+        // Schedule the print statement to execute 2 seconds after the animation starts
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            startSpinning()
         }
     }
+    
+    // Function to start the spinning
+    func startSpinning() {
+        isSpinning = true
+        timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
+            spinCameraPosition(focus: vm.userCoordinate, speed: spinningSpeed)
+        }
+    }
+
+    // Function to stop the spinning
+    func stopSpinning() {
+        isSpinning = false
+        timer?.invalidate()
+        timer = nil
+    }
+
+    func spinCameraPosition(focus centerCoordinate: CLLocationCoordinate2D, speed: Double) {
+        if let currentCamera = cameraProsition.camera {
+            let currentHeading = currentCamera.heading // Get the current heading
+            // Increment heading by speed and normalize it to [0, 360)
+            let newHeading = fmod(currentHeading + speed, 360)
+            
+            cameraProsition = .camera(MapCamera(centerCoordinate: centerCoordinate,
+                                                distance: currentCamera.distance,
+                                                heading: newHeading >= 0 ? newHeading : newHeading + 360, // Ensure heading is positive
+                                                pitch: currentCamera.pitch))
+        } else {
+            print("Warning: cameraProsition.camera is nil")
+            cameraProsition = .camera(MapCamera(centerCoordinate: centerCoordinate, distance: 1000, heading: 0, pitch: 0))
+        }
+    }
+
     var body: some View {
         Map(position: $cameraProsition,
             interactionModes: .all,
             selection: $selectedItem){
             
-            Annotation("You are here", coordinate: vm.userCoordinate) {
+            Annotation("", coordinate: vm.userCoordinate) {
                 VStack(spacing: 5) {
                     Text("You are here")
                         .font(.caption)
@@ -172,6 +212,15 @@ struct NewMapView: View {
                     .stroke(Color.red, lineWidth: 5) // Set stroke color and width
             }
         }
+            .onTapGesture {
+                stopSpinning() // Stop spinning on tap
+            }
+            .simultaneousGesture(DragGesture().onChanged { _ in
+                stopSpinning() // Stop spinning on drag
+            })
+            .simultaneousGesture(MagnificationGesture().onChanged { _ in
+                stopSpinning() // Stop spinning on zoom
+            })
             .mapControls{
                 //MapUserLocationButton()
                 MapCompass()
@@ -197,7 +246,7 @@ struct NewMapView: View {
             VStack {
                 HStack {
                     Button(action: {
-                        updateCameraPosition(focus: vm.userCoordinate, distance: 2200, heading: 92, pitch: 0)
+                        updateCameraPosition(focus: vm.userCoordinate, distance: 800, pitch: 60)
                     }) {
                         Image(systemName: "location.circle.fill") // Use an appropriate SF Symbol icon
                             .resizable()
@@ -215,10 +264,10 @@ struct NewMapView: View {
                         }
                     }) {
                         HStack {
-                            Image(systemName: isTracking ? "pause.circle.fill" : "play.circle.fill")
+                            Image(systemName: isTracking ? "pause.circle.fill" : "largecircle.fill.circle")
                                 .resizable()
                                 .frame(width: 40, height: 40)
-                                .foregroundColor(isTracking ? .red : .green)
+                                .foregroundColor(isTracking ? .gray : .red)
                             
                             // Show the timer next to the pause icon if isTracking is true
                             if isTracking {

@@ -23,7 +23,7 @@ import CoreLocation
     
     // MARK: - User Location State
     // @State private var userCoordinate: CLLocationCoordinate2D? = nil
-    /*@Published*/ var userCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 52.420958, longitude: 13.408547)
+    /*@Published*/ var userCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 37.33170303, longitude: -122.03024001)
 
 
     func getDirectionsPolyLine(selectedItem : MKMapItem) {
