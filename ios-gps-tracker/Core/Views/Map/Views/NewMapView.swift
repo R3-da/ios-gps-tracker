@@ -36,6 +36,7 @@ struct NewMapView: View {
     // New properties for spinning speed
     @State private var spinningSpeed: Double = 1.0 // degrees per second
     @State private var isSpinning: Bool = false
+    @State private var spinTimer: Timer? = nil
     
     // Function to start the timer
     func startTimer() {
@@ -68,7 +69,7 @@ struct NewMapView: View {
     // Function to start the spinning
     func startSpinning() {
         isSpinning = true
-        timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
+        spinTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
             spinCameraPosition(focus: vm.userCoordinate, speed: spinningSpeed)
         }
     }
@@ -76,8 +77,8 @@ struct NewMapView: View {
     // Function to stop the spinning
     func stopSpinning() {
         isSpinning = false
-        timer?.invalidate()
-        timer = nil
+        spinTimer?.invalidate()
+        spinTimer = nil
     }
 
     func spinCameraPosition(focus centerCoordinate: CLLocationCoordinate2D, speed: Double) {
@@ -107,6 +108,8 @@ struct NewMapView: View {
                         .font(.caption)
                         .foregroundColor(.black)
                         .padding(.bottom, 5) // Add some spacing between text and the view
+                        .shadow(color: .white, radius: 5, x: 0, y: 0) // First layer of shadow
+                        .shadow(color: .white.opacity(0.7), radius: 10, x: 0, y: 0) // Second layer of shadow for a stronger glow
 
                     pickupView
                 }
@@ -246,7 +249,7 @@ struct NewMapView: View {
             VStack {
                 HStack {
                     Button(action: {
-                        updateCameraPosition(focus: vm.userCoordinate, distance: 800, pitch: 60)
+                        updateCameraPosition(focus: vm.userCoordinate, distance: 350, pitch: 60)
                     }) {
                         Image(systemName: "location.circle.fill") // Use an appropriate SF Symbol icon
                             .resizable()
